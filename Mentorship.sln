@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mentorship.Web.CustomButton
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mentorship.Web.CustomButton.Tests", "Mentorship.Web.CustomButton.Tests\Mentorship.Web.CustomButton.Tests.csproj", "{2A4D3116-521B-4062-9C5D-EB13C8451826}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mentorship.Control.CusomButton", "Mentorship.Control.CusomButton\Mentorship.Control.CusomButton.csproj", "{E5F7E6C6-0E59-4A18-A291-219B27169E16}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{2A4D3116-521B-4062-9C5D-EB13C8451826}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2A4D3116-521B-4062-9C5D-EB13C8451826}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2A4D3116-521B-4062-9C5D-EB13C8451826}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E5F7E6C6-0E59-4A18-A291-219B27169E16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E5F7E6C6-0E59-4A18-A291-219B27169E16}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E5F7E6C6-0E59-4A18-A291-219B27169E16}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E5F7E6C6-0E59-4A18-A291-219B27169E16}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
