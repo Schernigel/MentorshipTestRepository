@@ -17,11 +17,11 @@ namespace Mentorship.Control.CusomButton
 
         private static MvcHtmlString CreateTag(string text = "", string size = "", string enabled = "", string theme = "", string onclick = "")
         {
-            StringBuilder textBuilder = new StringBuilder();
+            var textBuilder = new StringBuilder();
 
             textBuilder.AppendFormat("<text>{0}<text/>", text);
 
-            TagBuilder tag = new TagBuilder("stoneButton")
+            var tag = new TagBuilder("stoneButton")
             {
                 InnerHtml = textBuilder.ToString()
             };
