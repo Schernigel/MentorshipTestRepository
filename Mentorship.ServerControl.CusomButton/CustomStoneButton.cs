@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Specialized;
+using System.Text;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -40,12 +41,31 @@ namespace Mentorship.ServerControl.CustomButton
             writer.AddAttribute("enabled", Enabled);
             writer.AddAttribute("size", Size);
             writer.AddAttribute("theme", Theme);
+            writer.AddAttribute("onclick", "ShowInfo(this)");
 
             writer.RenderBeginTag("StoneButton");
             writer.RenderBeginTag("text");
             writer.Write(Text);
             writer.RenderEndTag();
             writer.RenderEndTag();
+        }
+
+        protected override void OnInit(EventArgs e)
+        {
+            ClientScriptManager cs = Page.ClientScript;
+
+            if (!cs.IsClientScriptBlockRegistered("MyScript"))
+            {
+                StringBuilder javaScriptCode = new StringBuilder();
+                javaScriptCode.Append("<script type=\"text/javascript\"> function ShowInfo(obj) {");
+                javaScriptCode.Append("var info = 'Was pressed '+obj.innerText;");
+                javaScriptCode.Append("alert(info);");
+                javaScriptCode.Append("} </script>");
+                
+                cs.RegisterClientScriptBlock(this.GetType(), "MyClientScript", javaScriptCode.ToString());
+            }
+           
+            base.OnInit(e);
         }
 
         public bool LoadPostData(string postDataKey, NameValueCollection postCollection)
