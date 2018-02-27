@@ -6,8 +6,8 @@ using System.Web.UI.WebControls;
 
 namespace Mentorship.ServerControl.CustomButton
 {
-    [ToolboxData("<{0}:StoneButton runat=server></{0}:StoneButton>")]
-    public class StoneButton: WebControl, IPostBackDataHandler
+    //[ToolboxData("<{0}:StoneButton runat=server></{0}:StoneButton>")]
+    public class StoneButton : Control, IPostBackEventHandler
     {
         private string _enabled = "true";
         public string Enabled
@@ -38,10 +38,13 @@ namespace Mentorship.ServerControl.CustomButton
 
         protected override void Render(HtmlTextWriter writer)
         {
+            writer.AddAttribute(HtmlTextWriterAttribute.Id, ClientID);
             writer.AddAttribute("enabled", Enabled);
             writer.AddAttribute("size", Size);
             writer.AddAttribute("theme", Theme);
-            writer.AddAttribute("onclick", "ShowInfo(this)");
+            // writer.AddAttribute("onclick", "ShowInfo(this)");
+
+            writer.AddAttribute(HtmlTextWriterAttribute.Onclick, Page.ClientScript.GetPostBackEventReference(this, string.Empty));
 
             writer.RenderBeginTag("StoneButton");
             writer.RenderBeginTag("text");
@@ -50,33 +53,43 @@ namespace Mentorship.ServerControl.CustomButton
             writer.RenderEndTag();
         }
 
-        protected override void OnInit(EventArgs e)
+        public event EventHandler Click;
+
+        public void RaisePostBackEvent(string eventArgument)
         {
-            ClientScriptManager cs = Page.ClientScript;
-
-            if (!cs.IsClientScriptBlockRegistered("MyScript"))
-            {
-                StringBuilder javaScriptCode = new StringBuilder();
-                javaScriptCode.Append("<script type=\"text/javascript\"> function ShowInfo(obj) {");
-                javaScriptCode.Append("var info = 'Was pressed '+obj.innerText;");
-                javaScriptCode.Append("alert(info);");
-                javaScriptCode.Append("} </script>");
-                
-                cs.RegisterClientScriptBlock(this.GetType(), "MyClientScript", javaScriptCode.ToString());
-            }
-           
-            base.OnInit(e);
+            OnClick(new EventArgs());
         }
-
-        public bool LoadPostData(string postDataKey, NameValueCollection postCollection)
+        protected virtual void OnClick(EventArgs e)
         {
-            throw new NotImplementedException();
+            Click?.Invoke(this, e);
         }
-
-        public void RaisePostDataChangedEvent()
-        {
-            throw new NotImplementedException();
-        }
-
     }
 }
+
+        //protected override void OnInit(EventArgs e)
+        //{
+        //    ClientScriptManager cs = Page.ClientScript;
+
+        //    if (!cs.IsClientScriptBlockRegistered("MyScript"))
+        //    {
+        //        StringBuilder javaScriptCode = new StringBuilder();
+        //        javaScriptCode.Append("<script type=\"text/javascript\"> function ShowInfo(obj) {");
+        //        javaScriptCode.Append("var info = 'Was pressed '+obj.innerText;");
+        //        javaScriptCode.Append("alert(info);");
+        //        javaScriptCode.Append("} </script>");
+
+        //        cs.RegisterClientScriptBlock(this.GetType(), "MyClientScript", javaScriptCode.ToString());
+        //    }
+
+        //    base.OnInit(e);
+        //}
+
+        //public bool LoadPostData(string postDataKey, NameValueCollection postCollection)
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+        //public void RaisePostDataChangedEvent()
+        //{
+        //    throw new NotImplementedException();
+        //}

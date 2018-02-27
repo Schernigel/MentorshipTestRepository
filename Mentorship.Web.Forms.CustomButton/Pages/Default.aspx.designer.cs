@@ -22,12 +22,21 @@ namespace Mentorship.Web.Forms.CustomButton.Pages {
         protected global::System.Web.UI.HtmlControls.HtmlForm form1;
         
         /// <summary>
-        /// StoneButton1 control.
+        /// first control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Mentorship.ServerControl.CustomButton.StoneButton StoneButton1;
+        protected global::Mentorship.ServerControl.CustomButton.StoneButton first;
+        
+        /// <summary>
+        /// label1 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label label1;
     }
 }
