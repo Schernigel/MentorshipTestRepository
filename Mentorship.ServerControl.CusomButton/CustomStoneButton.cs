@@ -7,7 +7,7 @@ using System.Web.UI.WebControls;
 namespace Mentorship.ServerControl.CustomButton
 {
     [ToolboxData("<{0}:StoneButton runat=server></{0}:StoneButton>")]
-    public class StoneButton : WebControl, IPostBackEventHandler
+    public class StoneButton: WebControl, IPostBackDataHandler
     {
         private string _enabled = "true";
         public string Enabled
@@ -35,20 +35,13 @@ namespace Mentorship.ServerControl.CustomButton
             get { return _text; }
             set { _text = value; }
         }
-        private EventHandler _click;
-        public event EventHandler Click
-        {
-            add { _click += value; }
-            remove { _click -= value; }
-        }
 
         protected override void Render(HtmlTextWriter writer)
         {
-            writer.AddAttribute(HtmlTextWriterAttribute.Id, this.ID);
             writer.AddAttribute("enabled", Enabled);
             writer.AddAttribute("size", Size);
             writer.AddAttribute("theme", Theme);
-            //writer.AddAttribute("onclick", "ShowInfo(this)");
+            writer.AddAttribute("onclick", "ShowInfo(this)");
 
             writer.RenderBeginTag("StoneButton");
             writer.RenderBeginTag("text");
@@ -68,28 +61,22 @@ namespace Mentorship.ServerControl.CustomButton
                 javaScriptCode.Append("var info = 'Was pressed '+obj.innerText;");
                 javaScriptCode.Append("alert(info);");
                 javaScriptCode.Append("} </script>");
-
+                
                 cs.RegisterClientScriptBlock(this.GetType(), "MyClientScript", javaScriptCode.ToString());
             }
-
+           
             base.OnInit(e);
         }
 
-        protected virtual void ButtonClickEvent()
+        public bool LoadPostData(string postDataKey, NameValueCollection postCollection)
         {
-            _click?.Invoke(this, new EventArgs());
+            throw new NotImplementedException();
         }
 
-        protected override void AddAttributesToRender(HtmlTextWriter writer)
+        public void RaisePostDataChangedEvent()
         {
-            writer.AddAttribute(HtmlTextWriterAttribute.Onclick,
-                Page.ClientScript.GetPostBackEventReference(this, String.Empty));
-            base.AddAttributesToRender(writer);
+            throw new NotImplementedException();
         }
 
-        public void RaisePostBackEvent(string eventArgument)
-        {
-            ButtonClickEvent();
-        }
     }
 }
