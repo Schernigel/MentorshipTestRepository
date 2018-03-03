@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Specialized;
-using System.Text;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -35,12 +33,8 @@ namespace Mentorship.ServerControl.CustomButton
             get { return _text; }
             set { _text = value; }
         }
-        private EventHandler _click;
-        public event EventHandler Click
-        {
-            add { _click += value; }
-            remove { _click -= value; }
-        }
+
+        public event EventHandler Click;
 
         protected override void Render(HtmlTextWriter writer)
         {
@@ -59,25 +53,14 @@ namespace Mentorship.ServerControl.CustomButton
             writer.RenderEndTag();
         }
 
-        public event EventHandler Click;
-
-            if (!cs.IsClientScriptBlockRegistered("MyScript"))
-            {
-                StringBuilder javaScriptCode = new StringBuilder();
-                javaScriptCode.Append("<script type=\"text/javascript\"> function ShowInfo(obj) {");
-                javaScriptCode.Append("var info = 'Was pressed '+obj.innerText;");
-                javaScriptCode.Append("alert(info);");
-                javaScriptCode.Append("} </script>");
-
-                cs.RegisterClientScriptBlock(this.GetType(), "MyClientScript", javaScriptCode.ToString());
-            }
-
-            base.OnInit(e);
+        public void RaisePostBackEvent(string eventArgument)
+        {
+            ButtonClickEvent();
         }
 
         protected virtual void ButtonClickEvent()
         {
-            _click?.Invoke(this, new EventArgs());
+            Click?.Invoke(this, new EventArgs());
         }
 
         protected override void AddAttributesToRender(HtmlTextWriter writer)
@@ -86,10 +69,18 @@ namespace Mentorship.ServerControl.CustomButton
                 Page.ClientScript.GetPostBackEventReference(this, String.Empty));
             base.AddAttributesToRender(writer);
         }
-
-        public void RaisePostBackEvent(string eventArgument)
-        {
-            ButtonClickEvent();
-        }
     }
 }
+
+//    if (!cs.IsClientScriptBlockRegistered("MyScript"))
+//            {
+//                StringBuilder javaScriptCode = new StringBuilder();
+//javaScriptCode.Append("<script type=\"text/javascript\"> function ShowInfo(obj) {");
+//                javaScriptCode.Append("var info = 'Was pressed '+obj.innerText;");
+//                javaScriptCode.Append("alert(info);");
+//                javaScriptCode.Append("} </script>");
+
+//                cs.RegisterClientScriptBlock(this.GetType(), "MyClientScript", javaScriptCode.ToString());
+//}
+
+//            base.OnInit(e);

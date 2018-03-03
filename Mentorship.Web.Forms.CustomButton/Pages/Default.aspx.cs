@@ -8,12 +8,12 @@ namespace Mentorship.Web.Forms.CustomButton.Pages
         protected override void OnInitComplete(EventArgs e)
         {
             base.OnInitComplete(e);
-            first.Click += StoneButton1_Click;
+            First.Click += StoneButton1_Click;
         }
 
         private void StoneButton1_Click(object sender, EventArgs e)
         {
-            label1.Text = sender.ToString();
+            Label2.Text = sender.ToString();
         }
 
         protected void Page_Load(object sender, EventArgs e)
