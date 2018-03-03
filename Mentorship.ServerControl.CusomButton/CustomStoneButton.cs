@@ -50,6 +50,8 @@ namespace Mentorship.ServerControl.CustomButton
             writer.AddAttribute("theme", Theme);
             //writer.AddAttribute("onclick", "ShowInfo(this)");
 
+            writer.AddAttribute(HtmlTextWriterAttribute.Onclick, Page.ClientScript.GetPostBackEventReference(this, string.Empty));
+
             writer.RenderBeginTag("StoneButton");
             writer.RenderBeginTag("text");
             writer.Write(Text);
@@ -57,9 +59,7 @@ namespace Mentorship.ServerControl.CustomButton
             writer.RenderEndTag();
         }
 
-        protected override void OnInit(EventArgs e)
-        {
-            ClientScriptManager cs = Page.ClientScript;
+        public event EventHandler Click;
 
             if (!cs.IsClientScriptBlockRegistered("MyScript"))
             {

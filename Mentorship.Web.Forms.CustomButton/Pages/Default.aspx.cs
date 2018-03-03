@@ -1,15 +1,21 @@
 ﻿using Mentorship.ServerControl.CustomButton;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
 
 namespace Mentorship.Web.Forms.CustomButton.Pages
 {
     public partial class Default : System.Web.UI.Page
     {
+        protected override void OnInitComplete(EventArgs e)
+        {
+            base.OnInitComplete(e);
+            first.Click += StoneButton1_Click;
+        }
+
+        private void StoneButton1_Click(object sender, EventArgs e)
+        {
+            label1.Text = sender.ToString();
+        }
+
         protected void Page_Load(object sender, EventArgs e)
         {
             //base.OnLoad(e);
