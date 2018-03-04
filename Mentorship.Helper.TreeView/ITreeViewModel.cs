@@ -1,21 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Mentorship.Helper.TreeView
+﻿namespace Mentorship.Helper.TreeView
 {
     public interface ITreeViewModel
     {
          int ID { get; set; }
 
-         string Name { get; set; }
+         string Type { get; set; }
 
-         string Description { get; set; }
+         string IdText { get; set; }
 
          int? ParentId { get; set; }
 
          string Disabled { get; set; }
+
+         string Text { get; set; }
     }
 }
