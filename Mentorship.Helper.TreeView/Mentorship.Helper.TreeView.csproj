@@ -68,7 +68,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Interfaces\INode.cs" />
     <Compile Include="ITreeViewModel.cs" />
+    <Compile Include="TreeViewHelper.cs" />
     <Compile Include="TreeViewHtmlHelpers.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

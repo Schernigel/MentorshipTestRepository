@@ -9,7 +9,7 @@ namespace Mentorship.Web.TreeView
 {
     public class TreeViewContext : DbContext
     {
-        public TreeViewContext() { }
+        public TreeViewContext() { } //Where is connectionString?
 
         public DbSet<Category> Categories { get; set; }
     }

@@ -2,7 +2,7 @@
 {
     public interface ITreeViewModel
     {
-         int ID { get; set; }
+         int Id { get; set; }
 
          string Type { get; set; }
 
