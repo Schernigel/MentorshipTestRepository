@@ -26,7 +26,7 @@ namespace Mentorship.Helper.TreeView
 
                     if(item.Type != null)
                     {
-                        sb.AppendFormat($"<input type='{item.Type}' id='{item.IdText}' checked='checked' disabled='{item.Disabled}'><label for='{item.IdText}'>{item.Text}</label>");
+                        sb.AppendFormat($"<input type='{item.Type}' id='{item.IdText}' checked='checked'><label for='{item.IdText}'>{item.Text}</label>");
                     }
                     else
                     {
