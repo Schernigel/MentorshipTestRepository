@@ -9,15 +9,16 @@ namespace Mentorship.Helper.TreeView
     {
         public static MvcHtmlString TreeViewHelper(this HtmlHelper helper, IEnumerable<ITreeViewModel> model)
         {
-            var s = GetRoots(model.ToList());
-            return new MvcHtmlString(s);
+            var s = GetRoots(model.ToList()); //what meens s? Is it the best name?
+            return new MvcHtmlString(s); //Probably better new MvcHtmlString(GetRoots(model))
         }
 
-        public static string GetRoots(List<ITreeViewModel> modelList)
+        public static string GetRoots(List<ITreeViewModel> modelList) //Why public, Why you replace IEnumerable to List, why List? 
         {
-            StringBuilder sb = new StringBuilder();
+            //Why do you use StringBuilder? What about TagBuilder?
+            StringBuilder sb = new StringBuilder(); // var or StringBuilder? 
 
-            foreach (ITreeViewModel item in modelList)
+            foreach (ITreeViewModel item in modelList) //var or ITreeViewModel?
             {
                 if (item.ParentId == null)
                 {
@@ -43,7 +44,7 @@ namespace Mentorship.Helper.TreeView
             return sb.ToString();
         }
 
-        public static StringBuilder GetChilds(List<ITreeViewModel> modelList, ITreeViewModel previus, string tag)
+        public static StringBuilder GetChilds(List<ITreeViewModel> modelList, ITreeViewModel previus, string tag) //Public? 
         {
             StringBuilder sb = new StringBuilder();
             sb.Append(tag);
@@ -55,7 +56,7 @@ namespace Mentorship.Helper.TreeView
 
             foreach (ITreeViewModel item in modelList)
             {
-                if (item.ParentId == previus.ID)
+                if (item.ParentId == previus.Id)
                 {
                     sb.AppendLine("<ul>\n");
                     sb.Append("<li>");

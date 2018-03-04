@@ -1,5 +1,6 @@
 ﻿@using Mentorship.Helper.TreeView
-@model IEnumerable<Mentorship.Web.TreeView.Models.Category>
+@using Mentorship.Helper.TreeView.Interfaces
+@model IEnumerable<INode>
 
 @{
     Layout = null;
@@ -9,13 +10,14 @@
 
 <html>
 <head>
+    <link href="~/Content/style.css" rel="stylesheet" />
     <meta name="viewport" content="width=device-width" />
     <title>Index</title>
     <link href="~/Styles/style.css" rel="stylesheet" />
 </head>
 <body>
     <div class="css-treeview"> 
-        @Html.TreeViewHelper(Model)
+        @Html.CustomTreeViewHelper(Model)
     </div>
 </body>
 </html>

@@ -4,7 +4,7 @@ namespace Mentorship.Web.TreeView.Models
 {
     public class Category : ITreeViewModel
     {
-        public int ID { get; set; }
+        public int Id { get; set; }
 
         public string Type { get; set; }
 
