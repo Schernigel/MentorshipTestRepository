@@ -13,10 +13,20 @@
     <link href="~/Content/style.css" rel="stylesheet" />
     <meta name="viewport" content="width=device-width" />
     <title>Index</title>
+    <script src="~/scripts/jquery-3.3.1.min.js"></script>
 </head>
 <body>
-    <div class="css-treeview"> 
-        @Html.CustomTreeViewHelper(Model)
-    </div>
+<div class="css-treeview"> 
+    @Html.CustomTreeViewHelper(Model)
+</div>
+<script>
+    $(document).ready(function(){
+        $("ul li label, ul li span").click(function(){
+            $("ul li label,ul li span").removeClass("active");
+            $(this).addClass("active");
+            console.log($(this)[0].id === "" ? $(this).attr("for") : $(this)[0].id);
+        });
+    });
+</script>
 </body>
 </html>

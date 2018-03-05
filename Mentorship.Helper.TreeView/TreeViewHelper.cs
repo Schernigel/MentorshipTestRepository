@@ -24,7 +24,8 @@ namespace Mentorship.Helper.TreeView
             foreach (var node in model.Where(m => m.ParentId == parentId))
             {
                 var liSubItem = new TagBuilder("li");
-                var nodeId = $"item-{node.Id}";
+                var parId = parentId != null ? parentId.Value + "-" : string.Empty;
+                var nodeId = $"item-{parId}{node.Id}";
                 if (node.HasChildren)
                 {
                     var cbItem = new TagBuilder("input");
@@ -43,6 +44,7 @@ namespace Mentorship.Helper.TreeView
                 {
                     var spanItem = new TagBuilder("span");
                     spanItem.SetInnerText(node.Text);
+                    spanItem.MergeAttribute("id", nodeId);
                     liSubItem.InnerHtml += spanItem;
                 }
 

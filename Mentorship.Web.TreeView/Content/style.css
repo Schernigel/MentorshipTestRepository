@@ -6,9 +6,19 @@
     margin: 0;
     list-style: none;
 }
-.css-treeview li span, .css-treeview li a {
+.css-treeview ul li span, .css-treeview ul li a {
     margin-left: 18px;
 }
+
+.css-treeview ul li span, .css-treeview ul li label {
+    padding: 3px;
+}
+
+.css-treeview ul li label.active, .css-treeview ul li span.active {
+    background: #0074e8;
+    color: white;
+}
+
 .css-treeview input
 {
     position: absolute;
