@@ -1,83 +1,55 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Web.Mvc;
 
 namespace Mentorship.Helper.TreeView
 {
     public static class TreeViewHtmlHelpers
     {
-        public static MvcHtmlString TreeViewHelper(this HtmlHelper helper, IEnumerable<ITreeViewModel> model)
+        public static MvcHtmlString TreeViewHelper<TModel>(this HtmlHelper<TModel> helper,
+            IEnumerable<ITreeViewModel> model) where TModel : IEnumerable<ITreeViewModel>
         {
-            var s = GetRoots(model.ToList()); //what meens s? Is it the best name?
-            return new MvcHtmlString(s); //Probably better new MvcHtmlString(GetRoots(model))
+            var divTreeView = new TagBuilder("div");
+            divTreeView.AddCssClass("css-treeview");
+            var ulRoot = new TagBuilder("ul");
+            BuildTreeView(ulRoot, model);
+            divTreeView.InnerHtml += ulRoot;
+            return new MvcHtmlString(divTreeView.ToString(TagRenderMode.Normal));
         }
 
-        public static string GetRoots(List<ITreeViewModel> modelList) //Why public, Why you replace IEnumerable to List, why List? 
+        private static void BuildTreeView<TModel>(TagBuilder rootTag, TModel model, int? parentId = null) where TModel : IEnumerable<ITreeViewModel>
         {
-            //Why do you use StringBuilder? What about TagBuilder?
-            StringBuilder sb = new StringBuilder(); // var or StringBuilder? 
-
-            foreach (ITreeViewModel item in modelList) //var or ITreeViewModel?
+            foreach (var node in model.Where(m => m.ParentId == parentId))
             {
-                if (item.ParentId == null)
+                var liSubItem = new TagBuilder("li");
+                var nodeId = $"item-{node.Id}";
+                if (node.HasChildren)
                 {
-                    sb.AppendLine("<ul>");
-                    sb.Append("<li>");
-
-                    if(item.Type != null)
+                    var cbItem = new TagBuilder("input");
+                    cbItem.MergeAttribute("id", nodeId);
+                    cbItem.MergeAttribute("type", "checkbox");
+                    if(node.Disabled == "disabled")
                     {
-                        sb.AppendFormat($"<input type='{item.Type}' id='{item.IdText}' checked='checked'><label for='{item.IdText}'>{item.Text}</label>");
+                        cbItem.MergeAttribute("disabled", node.Disabled);
                     }
-                    else
-                    {
-                        sb.AppendFormat($"<a href='./ '>{item.Text}</a>");
-                    }
-                    
-                    sb = GetChilds(modelList, item, sb.ToString());
-
-                    sb.AppendLine("</li>\n");
-                    sb.AppendLine("</ul>\n");
+                    var lblItem = new TagBuilder("label");
+                    lblItem.MergeAttribute("for", nodeId);
+                    lblItem.SetInnerText(node.Text);
+                    liSubItem.InnerHtml += cbItem;
+                    liSubItem.InnerHtml += lblItem;
+                    var ulGroup = new TagBuilder("ul");
+                    BuildTreeView(ulGroup, model, node.Id);
+                    liSubItem.InnerHtml += ulGroup;
                 }
-            }
-
-            return sb.ToString();
-        }
-
-        public static StringBuilder GetChilds(List<ITreeViewModel> modelList, ITreeViewModel previus, string tag) //Public? 
-        {
-            StringBuilder sb = new StringBuilder();
-            sb.Append(tag);
-
-            //int? previusParentId = previus.ParentId;
-            int? currentParentId = -1;
-
-            bool change = false;
-
-            foreach (ITreeViewModel item in modelList)
-            {
-                if (item.ParentId == previus.Id)
+                else
                 {
-                    sb.AppendLine("<ul>\n");
-                    sb.Append("<li>");
-
-                    if (item.Type != null)
-                    {
-                        sb.AppendFormat($"<input type='{item.Type}' id='{item.IdText}' checked='checked' disabled='{item.Disabled}'><label for='{item.IdText}'>{item.Text}</label>");
-                    }
-                    else
-                    {
-                        sb.AppendFormat($"<a href='./ '>{item.Text}</a>");
-                    }
-
-                    sb = GetChilds(modelList, item, sb.ToString());
-
-                    sb.AppendLine("</li>\n");
-                    sb.AppendLine("</ul>\n");
+                    var spanItem = new TagBuilder("span");
+                    spanItem.SetInnerText(node.Text);
+                    liSubItem.InnerHtml += spanItem;
                 }
-            }
 
-            return sb;
+                rootTag.InnerHtml += liSubItem;
+            }
         }
     }
 }

@@ -6,14 +6,12 @@ namespace Mentorship.Web.TreeView.Models
     {
         public int Id { get; set; }
 
-        public string Type { get; set; }
-
-        public string IdText { get; set; }
-
         public int? ParentId { get; set; }
 
         public string Disabled { get; set; }
 
         public string Text { get; set; }
+
+        public bool HasChildren { get; set; }
     }
 }

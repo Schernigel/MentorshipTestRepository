@@ -1,30 +1,98 @@
-﻿using Mentorship.Web.TreeView.Models;
+﻿using System.Web.Mvc;
+using System.Linq;
+using Mentorship.Web.TreeView.Models;
+using System;
 using System.Collections.Generic;
-using System.Web.Mvc;
-using Mentorship.Helper.TreeView.Interfaces;
+using System.Data;
+using Mentorship.Web.TreeView.Context;
 
 namespace Mentorship.Web.TreeView.Controllers
 {
     public class HomeController : Controller
     {
-        //private TreeViewContext context = new TreeViewContext();
-        // GET: Home
+        TreeViewContext context = new TreeViewContext();
+        
         public ActionResult Index()
         {
-            //var aaa = context.Categories.ToList();
-            var treeView = new List<INode>
+            return View(context.Categories.ToList());
+        }
+
+        //public ViewResult Refresh()
+        //{
+        //    var data = new DataInitializer();
+        //    data.InitializeDatabase(context);
+        //    return View("Index", context.Categories.ToList());
+        //}
+
+        public JsonResult SaveCategory(int? parentId, string text)
+        {
+            object result;
+            try
             {
-                new Node() {Id = 1, Text = "Node 1", ParentId = null, HasChildren = true},
-                new Node() {Id = 2, Text = "Node 2", ParentId = null, HasChildren = true},
-                new Node() {Id = 3, Text = "Node 1.1", ParentId = 1, HasChildren = true},
-                new Node() {Id = 4, Text = "Node 1.1.1", ParentId = 3, HasChildren = false},
-                new Node() {Id = 5, Text = "Node 1.1.2", ParentId = 3, HasChildren = false},
-                new Node() {Id = 6, Text = "Node 2.1", ParentId = 2, HasChildren = false},
-                new Node() {Id = 7, Text = "Node 2.2", ParentId = 2, HasChildren = false},
-                new Node() {Id = 8, Text = "Node 3", ParentId = null, HasChildren = false},
-                new Node() {Id = 9, Text = "Node 1.2", ParentId = 1, HasChildren = false}
-            };
-            return View(treeView);
+                var category = new Category();
+
+                category.Text = text;
+                category.ParentId = parentId;
+                category.HasChildren = false;
+
+                context.Categories.Add(category);
+                context.SaveChanges();
+
+                 result = new { Message = "", Status = true };
+
+            }
+            catch (Exception ex)
+            {
+                 result = new { Message = "", Status = false };
+            }
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult DeleteCategory(int currentId)
+        {
+            object result;
+            try
+            {
+                using (TreeViewContext context = new TreeViewContext())
+                {
+                    List<Category> deleteList = DeleteHelper(currentId, 0);
+
+                    deleteList.AddRange(context.Categories.Where(n => n.Id == currentId).ToList());
+                   
+                    foreach(Category cat in deleteList)
+                    {
+                        context.Categories.Attach(cat);
+                    }
+
+                    context.Categories.RemoveRange(deleteList);
+                    context.SaveChanges();
+
+                    result = new { Message = "", Status = true };
+
+                }
+            }
+            catch (Exception ex)
+            {
+                result = new { Message = "", Status = false };
+            }
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+
+        private static List<Category> DeleteHelper(int id, int position)
+        {
+
+            var deletelist = new List<Category>();
+
+            using (TreeViewContext context = new TreeViewContext())
+            {
+                deletelist.AddRange(context.Categories.Where(n => n.ParentId == id).ToList());
+
+                for (int i = position; i < deletelist.Count; i++)
+                {
+                    deletelist.AddRange((DeleteHelper(deletelist[i].Id,++position)));
+                }
+            }
+            return deletelist;
         }
     }
 }
