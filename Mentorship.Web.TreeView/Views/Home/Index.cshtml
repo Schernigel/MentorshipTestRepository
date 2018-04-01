@@ -14,156 +14,159 @@
     <link href="~/Content/style.css" rel="stylesheet" />
     <script src="~/scripts/jquery-3.3.1.min.js"></script>
     <title>Index</title>
-    <script src="~/scripts/jquery-3.3.1.min.js"></script>
 </head>
 <body>
     @Html.TreeViewHelper(Model)
     <div>
-        @Html.TextBox("nodeName")
+        @Html.TextBox("nodeNameTextBox")
         @Html.Label("Is Parent?")
-        @Html.CheckBox("parentNode")
+        @Html.CheckBox("isParentNode")
         <input type="button" id="add" value="Add" />
         <input type="button" id="delete" value="Delete" />
-        @*//@Html.Action("Refresh", "Home");*@
-        <input type="button" id="refresh" value="Refresh" />
     </div>
 
     <script>
 
         $(document).ready(function () {
 
+            var unknownId = "unknownId";
+
             Start();
 
             $("#add").click(function () {
-                var text = $("#nodeName").val();
 
-                if ($("#parentNode").prop('checked')) {
-                    $("#nodeName").before('<div class="css-treeview"><ul><li><input id="'+6+'" type="checkbox"></input><label>' + text + '</label></ul></li></div>');
-                    AddToDataBase(null, text);
+                var nodeName = $("#nodeNameTextBox").val();
+
+                if ($("#isParentNode").prop('checked')) {
+
+                    $(".css-treeview").children('ul').append('<li><span id="item-' + unknownId + '">' + nodeName + '</span></li>');
+                    $(".active").removeClass("active");
+
+                    AddToDataBase(null, nodeName);
+
                 } else {
+
                     var activeTag = $('.active');
 
                     var nextTag = activeTag.siblings("ul");
 
+                    var parentId = activeTag.parentsUntil("input")[0].firstChild.attributes[0].nodeValue.replace(/[^0-9]/g, '');
+
                     if (nextTag.length > 0) {
                         if (nextTag[0].tagName == 'UL') {
-                            nextTag.append('<li><span>' + text + '</span></li>');
+                            nextTag.append('<li><span id="item-' + unknownId + '">' + nodeName + '</span></li>');
                         }
                     } else {
-                        activeTag.after('<ul><li><span>' + text + '</span></li></ul>');
-                        activeTag.replaceWith('<input  type="checkbox"></input><label>' + activeTag.text() + '</label>');
+
+                        activeTag.after('<ul><li><span id="item-' + unknownId + '">' + nodeName + '</span></li></ul>');
+                        activeTag.replaceWith('<input id="item-' + parentId + '" type= "checkbox" ></input > <label for="item-' + parentId + '">' + activeTag.text() + '</label>');
                     }
 
-                    var parentId = activeTag.parentsUntil("input")[0].firstChild.attributes[0].nodeValue.replace(/[^0-9]/g, '');
-                    AddToDataBase(parentId, activeTag.text());
+                    $(".active").removeClass("active");
+
+                    AddToDataBase(parentId, nodeName);
                 }
 
                 Start();
             });
 
+
             $("#delete").click(function () {
-                var text = $("#nodeName").val();
+                var currentId = null;
+
+                var parentId = null;
 
                 var activeTag = $('.active');
 
-                var currentId = activeTag.siblings("input")[0].attributes[0].nodeValue.replace(/[^0-9]/g, '');
+                var parentTag = activeTag.closest("ul").siblings("input");
+                if (parentTag.length > 0) {
+                    parentId = parentTag.attr("id").replace(/[^0-9]/g, '');
+                }
 
-                activeTag.siblings("ul").remove();
-                activeTag.remove();
+                if (activeTag[0].tagName == "SPAN") {
+                    currentId = activeTag.attr("id").replace(/[^0-9]/g, '');
 
-                DeleteFromDataBase(currentId);
+                    DeleteFromDataBase(currentId, parentId);
 
-                //var parentNodes = activeTag.parents();
-                //if (parentNodes != 'undefined') {
-                //    var parentId = parentNodes.closest("input")[0].firstChild.attributes[0].nodeValue.replace(/[^0-9]/g, '');
-                //}
+                    ChangeTag(activeTag, parentId);
 
-                //var parentTag = activeTag.parent();
-                //var besideTag = parentTag.siblings();
+                } else {
+                    currentId = activeTag.siblings("input").attr("id").replace(/[^0-9]/g, '');
 
-                //if (besideTag.length == 0) {
-                //    activeTag.remove();
+                    DeleteFromDataBase(currentId, parentId);
 
-                //    IsParent(activeTag);
-                //} else {
-                //    activeTag.remove();
-                //    activeTag = null;
-                //    parentTag = null;
-                //    besideTag = null;
-                //}
-                //activeTag.parent(activeTag).parentreplaceWith('<ul><li><span class>' + activeTag.text() + '</span></li></ul>')
+                    ChangeTag(activeTag, parentId);
+
+                }
 
                 Start();
             });
-
-            @*$("#refresh").click(function () {
-
-                $(".css-treeview").remove();
-
-               $.ajax({
-                   url: '@Url.Action("Refresh", "Home")'
-               });
-
-                Start();
-            });*@
-
         });
-
-        //function IsParent(obj) {
-        //    var parent = obj.siblings();
-        //    if (parent[0].tagName == "INPUT") {
-        //        parent[0].remove();
-        //    }else{
-        //        IsParent(parent);
-        //    }
-
-        //}
+        
 
         function Start() {
             $("ul li label, ul li span").click(function () {
                 $("ul li label, ul li span").removeClass("active");
                 $(this).addClass("active");
-                var text = ($(this)[0].id === "" ? $(this).text() : $(this)[0].text());
-                $("#nodeName").val(text);
+                var text = $(this).text();
+                $("#nodeNameTextBox").val(text);
             });
         }
 
-        function AddToDataBase(parentId, text) {
+        function ChangeTag(activeTag, parentId) {
+            activeTag.parent("li").remove();
+
+            if (parentId != null) {
+                var isChildLi = $("#item-" + parentId).siblings("ul").children("li");
+                if (isChildLi.length == 0) {
+                    $("#item-" + parentId).parent("li").replaceWith('<li><span id="item-' + parentId + '">' + $("#item-" + parentId).siblings("label").text() + '</span></li>');
+                }
+            }
+        }
+
+
+        function AddToDataBase(parentId, nodeName) {
 
             $.ajax({
                     url: '@Url.Action("SaveCategory", "Home")',
                         type: 'POST',
-                        data: JSON.stringify({ "parentId": parentId, "text": text }),
+                        data: JSON.stringify({ "parentId": parentId, "nodeName": nodeName }),
                         dataType: "json",
                         contentType: "application/json; charset=utf-8",
                         success: function (result) {
 
                             if (result.Status == true) {
-                                alert("Done!");
+                                id = result.ID;
+                                console.log("Done! new id = " + id);
+                                $("#item-unknownId").attr("id", "item-" + id);
+                                $("#item-" + id).addClass("active");
                             }
                             else {
-                                alert("Failed!")
+                                console.log("Failed!")
                             }
                         }
                     });
         };
 
 
-        function DeleteFromDataBase(currentId) {
+        function DeleteFromDataBase(currentId, parentId) {
 
             $.ajax({
                     url: '@Url.Action("DeleteCategory", "Home")',
                         type: 'POST',
-                        data: JSON.stringify({ "currentId": currentId}),
+                        data: JSON.stringify({ "currentId": currentId, "parentId" : parentId}),
                         dataType: "json",
                         contentType: "application/json; charset=utf-8",
                         success: function (result) {
 
                             if (result.Status == true) {
-                                alert("Done!");
+                                var list = result.ListID;
+                                list.forEach(function (item, i, list) {
+                                    console.log("Done! deleted id = " + item);
+                                });
                             }
                             else {
-                                alert("Failed!")
+                                console.log("Failed!")
                             }
                         }
                     });

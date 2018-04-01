@@ -44,6 +44,7 @@ namespace Mentorship.Helper.TreeView
                 else
                 {
                     var spanItem = new TagBuilder("span");
+                    spanItem.MergeAttribute("id", nodeId);
                     spanItem.SetInnerText(node.Text);
                     liSubItem.InnerHtml += spanItem;
                 }

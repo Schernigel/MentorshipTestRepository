@@ -4,7 +4,6 @@ using Mentorship.Web.TreeView.Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using Mentorship.Web.TreeView.Context;
 
 namespace Mentorship.Web.TreeView.Controllers
 {
@@ -17,28 +16,32 @@ namespace Mentorship.Web.TreeView.Controllers
             return View(context.Categories.ToList());
         }
 
-        //public ViewResult Refresh()
-        //{
-        //    var data = new DataInitializer();
-        //    data.InitializeDatabase(context);
-        //    return View("Index", context.Categories.ToList());
-        //}
-
-        public JsonResult SaveCategory(int? parentId, string text)
+        public JsonResult SaveCategory(int? parentId, string nodeName)
         {
             object result;
             try
             {
                 var category = new Category();
 
-                category.Text = text;
+                category.Text = nodeName;
                 category.ParentId = parentId;
                 category.HasChildren = false;
 
                 context.Categories.Add(category);
                 context.SaveChanges();
+                int id = category.Id;
 
-                 result = new { Message = "", Status = true };
+                if (parentId != null)
+                {
+                    var parent = context.Categories.SingleOrDefault(c => c.Id == parentId);
+                    if(parent != null)
+                    {
+                        parent.HasChildren = true;
+                        context.SaveChanges();
+                    }
+                }
+
+                result = new { Message = "", ID = id, Status = true };
 
             }
             catch (Exception ex)
@@ -48,7 +51,7 @@ namespace Mentorship.Web.TreeView.Controllers
             return Json(result, JsonRequestBehavior.AllowGet);
         }
 
-        public JsonResult DeleteCategory(int currentId)
+        public JsonResult DeleteCategory(int currentId, int? parentId)
         {
             object result;
             try
@@ -67,7 +70,25 @@ namespace Mentorship.Web.TreeView.Controllers
                     context.Categories.RemoveRange(deleteList);
                     context.SaveChanges();
 
-                    result = new { Message = "", Status = true };
+                    if (parentId != null)
+                    {
+                        var parent = context.Categories.SingleOrDefault(c => c.Id == parentId);
+                        if (parent != null)
+                        {
+                            parent.HasChildren = false;
+                            context.SaveChanges();
+                        }
+                    }
+
+                    List<int> listId = new List<int>();
+
+                    foreach (var category in deleteList)
+                    {
+                        listId.Add(category.Id);
+                    }
+
+
+                    result = new { Message = "", ListID = listId, Status = true };
 
                 }
             }
